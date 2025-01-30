@@ -21,6 +21,40 @@ namespace TeslaLogger
 {
     [SuppressMessage("Globalization", "CA1303:Literale nicht als lokalisierte Parameter übergeben", Justification = "<Pending>")]
     [SuppressMessage("Design", "CA1031:Keine allgemeinen Ausnahmetypen abfangen", Justification = "<Pending>")]
+
+    class ConfigLoader
+    {
+        private static Dictionary<string, string> LoadConfig(string filePath)
+        {
+            var config = new Dictionary<string, string>();
+            if (!File.Exists(filePath))
+                return config;
+
+            foreach (var line in File.ReadAllLines(filePath))
+            {
+                var parts = line.Split('=');
+                if (parts.Length == 2)
+                    config[parts[0].Trim()] = parts[1].Trim();
+            }
+            return config;
+        }
+
+        public static string GetDBConnectionString(out string Host, out string Database, out string User, out string Password)
+        {
+            var config = LoadConfig("/etc/teslalogger/docker_config.config");
+
+            Host = config.ContainsKey("sqlHost") ? config["sqlHost"] : "127.0.0.1";
+            Database = config.ContainsKey("sqlDatabase") ? config["sqlDatabase"] : "teslalogger";
+            User = config.ContainsKey("sqlUser") ? config["sqlUser"] : "root";
+            Password = config.ContainsKey("sqlPassword") ? config["sqlPassword"] : "teslalogger";
+
+            if (config.Count == 0)
+                return null;
+
+            return $"Server={config["sqlHost"]};Database={config["sqlDatabase"]};Uid={config["sqlUser"]};Password={config["sqlPassword"]};CharSet=utf8mb4;";
+        }
+    }
+
     public class DBHelper
     {
         private static Dictionary<string, int> mothershipCommands = new Dictionary<string, int>();
@@ -30,6 +64,7 @@ namespace TeslaLogger
 
         private static Random random = new Random();
 
+        internal static string Host = "127.0.0.1";
         internal static string Database = "teslalogger";
         internal static string User = "root";
         internal static string Password = "teslalogger";
@@ -43,17 +78,20 @@ namespace TeslaLogger
             {
                 return _DBConnectionstring;
             }
-            string DBConnectionstring = "";
-            if (string.IsNullOrEmpty(ApplicationSettings.Default.DBConnectionstring))
+            string DBConnectionstring = ConfigLoader.GetDBConnectionString();
+            if (string.IsNullOrEmpty(DBConnectionstring))
             {
-                if (Tools.IsDocker())
-                    DBConnectionstring = "Server=database;Database=teslalogger;Uid=root;Password=teslalogger;CharSet=utf8mb4;";
+                if (string.IsNullOrEmpty(ApplicationSettings.Default.DBConnectionstring))
+                {
+                    if (Tools.IsDocker())
+                        DBConnectionstring = "Server=database;Database=teslalogger;Uid=root;Password=teslalogger;CharSet=utf8mb4;";
+                    else
+                        DBConnectionstring = "Server=127.0.0.1;Database=teslalogger;Uid=root;Password=teslalogger;CharSet=utf8mb4;";
+                }
                 else
-                    DBConnectionstring = "Server=127.0.0.1;Database=teslalogger;Uid=root;Password=teslalogger;CharSet=utf8mb4;";
-            }
-            else
-            {
-                DBConnectionstring = ApplicationSettings.Default.DBConnectionstring;
+                {
+                    DBConnectionstring = ApplicationSettings.Default.DBConnectionstring;
+                }
             }
 
             if (DBConnectionstring.ToLower(Tools.ciEnUS).Contains("charset="))

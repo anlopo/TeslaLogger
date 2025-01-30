@@ -1043,8 +1043,8 @@ WHERE
                     }
                     using (StreamWriter writer = new StreamWriter(shellScript))
                     {
-                        writer.WriteLine($"/usr/bin/mysql {(Tools.IsDocker() ? "-hdatabase" : "")} -u{DBHelper.User} -p{DBHelper.Password} -D{DBHelper.Database}{(Tools.IsDocker() ? " -hdatabase" : "")} < {sqlCreate}");
-                        writer.WriteLine($"/usr/bin/mysql {(Tools.IsDocker() ? "-hdatabase" : "")} -u{DBHelper.User} -p{DBHelper.Password} -D{DBHelper.Database}{(Tools.IsDocker() ? " -hdatabase" : "")} < {sqlExtract}");
+                        writer.WriteLine($"/usr/bin/mysql {(Tools.IsDocker() ? $"-h{DBHelper.Host}" : "")} -u{DBHelper.User} -p{DBHelper.Password} -D{DBHelper.Database} < {sqlCreate}");
+                        writer.WriteLine($"/usr/bin/mysql {(Tools.IsDocker() ? $"-h{DBHelper.Host}" : "")} -u{DBHelper.User} -p{DBHelper.Password} -D{DBHelper.Database} < {sqlExtract}");
                     }
                     Tools.ExecMono("/bin/bash", shellScript);
                     if (!DBHelper.TableExists("chargingstate_bak"))
