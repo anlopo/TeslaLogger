@@ -39,14 +39,14 @@ namespace TeslaLogger
             return config;
         }
 
-        public static string GetDBConnectionString(out string Host, out string Database, out string User, out string Password)
+        public static string GetDBConnectionString(out string host, out string database, out string user, out string password)
         {
             var config = LoadConfig("/etc/teslalogger/docker_config.config");
 
-            Host = config.ContainsKey("sqlHost") ? config["sqlHost"] : "127.0.0.1";
-            Database = config.ContainsKey("sqlDatabase") ? config["sqlDatabase"] : "teslalogger";
-            User = config.ContainsKey("sqlUser") ? config["sqlUser"] : "root";
-            Password = config.ContainsKey("sqlPassword") ? config["sqlPassword"] : "teslalogger";
+            host = config.ContainsKey("sqlHost") ? config["sqlHost"] : "127.0.0.1";
+            database = config.ContainsKey("sqlDatabase") ? config["sqlDatabase"] : "teslalogger";
+            user = config.ContainsKey("sqlUser") ? config["sqlUser"] : "root";
+            password = config.ContainsKey("sqlPassword") ? config["sqlPassword"] : "teslalogger";
 
             if (config.Count == 0)
                 return null;
@@ -78,7 +78,7 @@ namespace TeslaLogger
             {
                 return _DBConnectionstring;
             }
-            string DBConnectionstring = ConfigLoader.GetDBConnectionString();
+            string DBConnectionstring = ConfigLoader.GetDBConnectionString(out Host, out Database, out User, out Password);
             if (string.IsNullOrEmpty(DBConnectionstring))
             {
                 if (string.IsNullOrEmpty(ApplicationSettings.Default.DBConnectionstring))
