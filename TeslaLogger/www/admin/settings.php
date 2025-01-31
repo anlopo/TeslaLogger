@@ -116,6 +116,10 @@ function CarsCombobox($cars, $selected)
 			if (property_exists($j,"HTTPPort"))
 				$HTTPPort = $j->{"HTTPPort"};
 
+			$TeslaLoggerIP = "192.168.0.1";
+			if (property_exists($j,"TeslaLoggerIP"))
+				$HTTPPort = $j->{"TeslaLoggerIP"};
+
 			$ScanMyTesla = "false";
 			if (property_exists($j,"ScanMyTesla"))
 				$ScanMyTesla = $j->{"ScanMyTesla"};
@@ -173,6 +177,9 @@ function CarsCombobox($cars, $selected)
 			if (isset($HTTPPort))
 				echo ("$('#HTTPPort').val('$HTTPPort');\r\n");
 
+			if (isset($TeslaLoggerIP))
+				echo ("$('#TeslaLoggerIP').val('$TeslaLoggerIP');\r\n");
+
 			if (isset($ZoomLevel))
 				echo ("$('#ZoomLevel').val('$ZoomLevel');\r\n");
 			
@@ -207,6 +214,7 @@ function CarsCombobox($cars, $selected)
 		URL_Admin: $("#URL_Admin").val(),
 		URL_Grafana: $("#URL_Grafana").val(),
 		HTTPPort: $("#HTTPPort").val(),
+		TeslaLoggerIP: $("#TeslaLoggerIP").val(),
 		ZoomLevel: $("#ZoomLevel").val(),
 		ScanMyTesla: $("#checkboxScanMyTesla").is(':checked'),
 		ShareData: $('#checkboxSharedata').is(':checked'),
@@ -262,6 +270,7 @@ echo(menu("Settings"));
 	<tr><td valign="top"><b><?php t("URL Admin Panel"); ?>:</b></td><td><input id="URL_Admin" style="width:100%;" placeholder="http://raspberry/admin/"></td></tr>
 	<tr><td valign="top"><b><?php t("URL Grafana"); ?>:</b></td><td><input id="URL_Grafana" style="width:100%;" placeholder="http://raspberry:3000/"></td></tr>
 	<tr><td valign="top"><b><?php t("Teslalogger HTTP Port"); ?>:</b></td><td><input id="HTTPPort" style="width:100%;" placeholder="5000"></td></tr>
+	<tr><td valign="top"><b><?php t("Teslalogger Hostname/IP"); ?>:</b></td><td><input id="TeslaLoggerIP" style="width:100%;" placeholder="192.168.0.1"></td></tr>
 	<tr><td valign="top"><b><?php t("Zoom Level"); ?>:</b></td><td><input id="ZoomLevel" size="4"></td></tr>
 	<tr><td><b><?php t("ScanMyTesla integration"); ?>:</b></td><td class="TT"><input id="checkboxScanMyTesla" type="checkbox" value="ScanMyTesla"> <label for="checkboxScanMyTesla"><?php t("Enable"); ?></label></td><td><a href="https://teslalogger.de/smt.php" target=”_blank”><img src="img/icon-help-24.png"/></a></td></tr>
 	<tr><td><b><?php t("Position by StreamingAPI"); ?>:</b></td><td class="TT"><input id="StreamingPos" type="checkbox" value="StreamingPos"> <label for="StreamingPos"><?php t("Enable"); ?></label></td><td><img id="StreamingPosHelp" src="img/icon-help-24.png" class="pointer"/></td></tr>
