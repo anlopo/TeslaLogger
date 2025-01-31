@@ -45,6 +45,17 @@ function GetTeslaloggerURL($path)
     else if (isDocker())
         $url = "http://teslalogger:$port/";
 
+    if (file_exists("/etc/teslalogger/settings.json"))
+	{
+		$content = file_get_contents("/etc/teslalogger/settings.json");
+		$j = json_decode($content);
+		if (!empty($j->{"TeslaLoggerIP"}))
+        {
+            $ip = $j->{"TeslaLoggerIP"};
+            $url = "http://$ip:$port/";
+        }
+    }
+    
     return $url.$path;
 }
 

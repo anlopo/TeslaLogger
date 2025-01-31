@@ -16,7 +16,12 @@ if [ $DAY -eq 1 ] && [ $MONTH -eq 1 ]; then
 fi
 
 if test -f "/tmp/teslalogger-DOCKER"; then
-    mysqldump -uroot -pteslalogger -hdatabase --single-transaction --routines --triggers teslalogger | gzip -9 > $SQLDUMP
+	if test -f "/etc/teslalogger/docker_config.config"; then
+		source /etc/teslalogger/docker_config.config
+		mysqldump -u$sqlUser -p$sqlPassword -h$sqlHost --single-transaction --routines --triggers $sqlDatabase | gzip -9 > $SQLDUMP
+	else
+    	mysqldump -uroot -pteslalogger -hdatabase --single-transaction --routines --triggers teslalogger | gzip -9 > $SQLDUMP
+	fi
 else
     mysqldump -uroot -pteslalogger  --single-transaction --routines --triggers teslalogger | gzip -9 > $SQLDUMP
 fi
