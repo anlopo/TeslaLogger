@@ -118,7 +118,7 @@ function CarsCombobox($cars, $selected)
 
 			$TeslaLoggerIP = "192.168.0.1";
 			if (property_exists($j,"TeslaLoggerIP"))
-				$HTTPPort = $j->{"TeslaLoggerIP"};
+				$TeslaLoggerIP = $j->{"TeslaLoggerIP"};
 
 			$ScanMyTesla = "false";
 			if (property_exists($j,"ScanMyTesla"))
